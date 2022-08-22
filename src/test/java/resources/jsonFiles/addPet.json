@@ -1,0 +1,18 @@
+{
+  "id": 123321123,
+  "category": {
+    "id": 0,
+    "name": "string"
+  },
+  "name": "daisy",
+  "photoUrls": [
+    "string"
+  ],
+  "tags": [
+    {
+      "id": 0,
+      "name": "string"
+    }
+  ],
+  "status": "available"
+}
