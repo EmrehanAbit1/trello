@@ -14,11 +14,12 @@ public class Hooks extends Utils {
     public static Config config;
     private static String tags = "";
 
+    private static Logger logger = Logger.getLogger(String.valueOf(Hooks.class.getClass()));
+
     @Before()
     public void setup(Scenario scenario) {
-        tags = scenario.getSourceTagNames().toString();
         if (tags.contains("api")) {
-            RestAssured.baseURI = config.getInstance().getBaseUri();
+            logger.info("Starting api tests");
         } else {
             launchBrowser();
             navigateTo(config.getInstance().getUrl());
@@ -28,7 +29,6 @@ public class Hooks extends Utils {
     @After
     public void tearDown(Scenario scenario) {
         if (tags.contains("api")) {
-            Logger logger = Logger.getLogger(Hooks.class.getName());
             logger.info("Finishing api tests");
         } else {
             endTest(scenario);

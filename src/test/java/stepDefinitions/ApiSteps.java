@@ -3,8 +3,16 @@ package stepDefinitions;
 
 import apiUtils.ResponseApi;
 import cucumber.api.java.en.*;
+import io.restassured.RestAssured;
+import utility.Config;
 
 public class ApiSteps extends ResponseApi {
+    public static Config config;
+
+    @Given("^I set \"([^\"]*)\" for api tests$")
+    public void i_set_for_api_tests(String arg1) throws Throwable {
+        RestAssured.baseURI = config.getInstance().getBaseUri();
+    }
 
     @Given("^I add new pet into the store with post request to url \"([^\"]*)\"$")
     public void i_add_new_pet_into_the_store_with_post_request_to_url(String url) throws Throwable {
@@ -25,5 +33,4 @@ public class ApiSteps extends ResponseApi {
     public void i_delete_the_pet_information_with_url(String url) throws Throwable {
         deleteCreatedPet(url);
     }
-
 }
