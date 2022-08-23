@@ -1,7 +1,9 @@
 package runners;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
+
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
@@ -9,12 +11,11 @@ import org.junit.runner.RunWith;
         features = "src/test/resources/feature",
         glue = {"stepDefinitions"},
         monochrome = false,
-        strict = true,
-        tags = "",
+        tags = {},
         plugin = {"pretty",
                 "html:target/TestResults/TestReport",
                 "json:target/TestResults/TestReport.json",
-                "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+                "com.cucumber.listener.ExtentCucumberFormatter:target/TestResults/TestReport/ExtentReport.html"}
 )
 
 public class TestRunner {

@@ -3,6 +3,7 @@ Feature: End to end test for ToolsQA's Book Store API
 
   Book Store Swagger URL: http://bookstore.toolsqa.com/swagger/index.html
 
+  @api
   Scenario: Authorized user is able to Add and Remove a book
     Given I add new pet into the store with post request to url "/pet"
     When I check if added pet exists in "/pet" url with get request

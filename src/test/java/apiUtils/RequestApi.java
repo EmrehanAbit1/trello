@@ -2,7 +2,6 @@ package apiUtils;
 
 import static io.restassured.RestAssured.*;
 
-import context.Context;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
