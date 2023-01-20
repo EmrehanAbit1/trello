@@ -59,7 +59,7 @@ public class Utils {
     /**
      * After tests are done, takes screenshot if failed, closes browser and ends test.
      *
-     * @param scenario library to get screenshot and reach to tags
+     * @param scenario library to get screenshot and reach to feature tags
      */
     public static WebDriver endTest(Scenario scenario) {
         try {
