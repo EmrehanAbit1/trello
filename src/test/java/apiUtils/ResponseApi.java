@@ -2,7 +2,6 @@ package apiUtils;
 
 
 import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
 import org.junit.Assert;
 import utility.Config;
 
@@ -27,7 +26,7 @@ public class ResponseApi extends RequestApi {
     /**
      * API request to assert if dog type exists
      *
-     * @param type
+     * @param type type of dog to search
      * @param url  api URI extension
      */
     public void checkDogType(String type, String url) {
