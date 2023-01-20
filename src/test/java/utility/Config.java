@@ -27,12 +27,21 @@ public class Config {
         return instance;
     }
 
+    /**
+     * Reading properties file
+     *
+     * @param path path to properties file
+     * @throws IOException
+     */
     private void getProperties(String path) throws IOException {
         input = new FileInputStream(path);
         prop = new Properties();
         prop.load(input);
     }
 
+    /**
+     * Reads property file
+     */
     public Config() {
         try {
             getProperties(CONFIG_PROPERTIES_PATH);

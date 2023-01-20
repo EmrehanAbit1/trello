@@ -10,7 +10,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import stepDefinitions.Hooks;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +20,12 @@ public class Utils {
 
     protected static WebDriver driver;
 
-    private static final Logger logger = Logger.getLogger(String.valueOf(Hooks.class.getClass()));
+    private static final Logger logger = Logger.getLogger(String.valueOf(Utils.class.getClass()));
 
     /**
      * Checks if test is in whether GitHub Actions or in local machine and starts browser depending on that condition
      *
-     * @return driver paramter to get browser
+     * @return driver parameter to get browser
      */
     public WebDriver launchBrowser() {
         try {

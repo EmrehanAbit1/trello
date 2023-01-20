@@ -15,6 +15,11 @@ public class Hooks extends Utils {
 
     private static final Logger logger = Logger.getLogger(String.valueOf(Hooks.class.getClass()));
 
+    /**
+     * Things to be done before test execution
+     *
+     * @param scenario
+     */
     @Before()
     public void setup(Scenario scenario) {
         tags = scenario.getSourceTagNames().toString();
@@ -27,6 +32,11 @@ public class Hooks extends Utils {
         }
     }
 
+    /**
+     * Things to be done before test execution
+     *
+     * @param scenario
+     */
     @After
     public void tearDown(Scenario scenario) {
         if (tags.contains("api")) {

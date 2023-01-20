@@ -13,15 +13,25 @@ public class ResponseApi extends RequestApi {
 
     private static int petId;
 
+    /**
+     * API request to add a new pet to store.
+     *
+     * @param url api URI extension
+     * @throws IOException
+     */
     public void addNewPetToStore(String url) throws IOException {
-        Response response = apiRequestPost(url, Config.getInstance().getPetAdditionJsonPath());
-        String jsonString = response.asString();
+        String jsonString = stringifyPostPutResponse(url, Config.getInstance().getPetAdditionJsonPath());
         petId = JsonPath.from(jsonString).get("id");
     }
 
+    /**
+     * API request to assert if dog type exists
+     *
+     * @param type
+     * @param url  api URI extension
+     */
     public void checkDogType(String type, String url) {
-        Response response = apiRequestGet(url + "/" + String.valueOf(petId));
-        String jsonString = response.asString();
+        String jsonString = stringifyGetResponse(url + "/" + String.valueOf(petId));
         JsonPath js = new JsonPath(jsonString);
         List<String> tags = js.getList("tags.name");
         for (String tag : tags) {
@@ -34,16 +44,25 @@ public class ResponseApi extends RequestApi {
         }
     }
 
+    /**
+     * API request to update the pet name
+     *
+     * @param url api URI extension
+     * @throws IOException
+     */
     public void updatePetInformation(String url) throws IOException {
         String updatePetJsonPath = Config.getInstance().getPetUpdateJsonPath();
-        Response response = apiRequestPut(url, updatePetJsonPath);
-        String jsonString = response.asString();
+        String jsonString = stringifyPostPutResponse(url, updatePetJsonPath);
         Assert.assertTrue(JsonPath.from(jsonString).get("name").equals("lilly"));
     }
 
+    /**
+     * API request to delete lately created pet
+     *
+     * @param url api URI extension
+     */
     public void deleteCreatedPet(String url) {
-        Response response = apiRequestDelete(url + "/" + String.valueOf(petId));
-        String jsonString = response.asString();
+        String jsonString = stringifyDeleteResponse(url + "/" + String.valueOf(petId));
         Assert.assertTrue(JsonPath.from(jsonString).get("message").equals(String.valueOf(petId)));
     }
 }
