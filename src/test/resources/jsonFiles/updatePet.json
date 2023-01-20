@@ -11,7 +11,11 @@
   "tags": [
     {
       "id": 0,
-      "name": "string"
+      "name": "pitbull"
+    },
+    {
+      "id": 1,
+      "name": "french bulldog"
     }
   ],
   "status": "available"

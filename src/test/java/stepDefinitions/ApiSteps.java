@@ -3,25 +3,17 @@ package stepDefinitions;
 
 import apiUtils.ResponseApi;
 import cucumber.api.java.en.*;
-import io.restassured.RestAssured;
-import utility.Config;
 
 public class ApiSteps extends ResponseApi {
-    public static Config config;
-
-    @Given("^I set \"([^\"]*)\" for api tests$")
-    public void i_set_for_api_tests(String arg1) throws Throwable {
-        RestAssured.baseURI = config.getInstance().getBaseUri();
-    }
 
     @Given("^I add new pet into the store with post request to url \"([^\"]*)\"$")
     public void i_add_new_pet_into_the_store_with_post_request_to_url(String url) throws Throwable {
         addNewPetToStore(url);
     }
 
-    @When("^I check if added pet exists in \"([^\"]*)\" url with get request$")
-    public void i_check_if_added_pet_exists_in_url_with_get_request(String arg0) throws Throwable {
-        checkIfPetAddedSuccessfully(arg0);
+    @Given("^I perform check if one of the type of dog is \"([^\"]*)\" with url \"([^\"]*)\"$")
+    public void i_perform_check_if_one_of_the_type_of_dog_is_with_url(String type, String url) throws Throwable {
+        checkDogType(type, url);
     }
 
     @When("^I update pet information with put request to url \"([^\"]*)\"$")
@@ -30,7 +22,7 @@ public class ApiSteps extends ResponseApi {
     }
 
     @Then("^I delete the pet information with url \"([^\"]*)\"$")
-    public void i_delete_the_pet_information_with_url(String url) throws Throwable {
+    public void i_delete_the_pet_information_with_url(String url) {
         deleteCreatedPet(url);
     }
 }

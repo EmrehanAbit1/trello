@@ -11,18 +11,19 @@ import java.util.logging.Logger;
 
 public class Hooks extends Utils {
 
-    public static Config config;
     private static String tags = "";
 
-    private static Logger logger = Logger.getLogger(String.valueOf(Hooks.class.getClass()));
+    private static final Logger logger = Logger.getLogger(String.valueOf(Hooks.class.getClass()));
 
     @Before()
     public void setup(Scenario scenario) {
+        tags = scenario.getSourceTagNames().toString();
         if (tags.contains("api")) {
             logger.info("Starting api tests");
+            RestAssured.baseURI = Config.getInstance().getBaseUri();
         } else {
             launchBrowser();
-            navigateTo(config.getInstance().getUrl());
+            navigateTo(Config.getInstance().getUrl());
         }
     }
 

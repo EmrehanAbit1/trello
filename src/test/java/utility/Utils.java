@@ -10,18 +10,24 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import stepDefinitions.Hooks;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Utils {
 
-    public static Config config;
-
     protected static WebDriver driver;
 
-    // Checks if test is in whether GitHub Actions or in local machine and starts browser depending on that condition
+    private static final Logger logger = Logger.getLogger(String.valueOf(Hooks.class.getClass()));
+
+    /**
+     * Checks if test is in whether GitHub Actions or in local machine and starts browser depending on that condition
+     *
+     * @return driver paramter to get browser
+     */
     public WebDriver launchBrowser() {
         try {
             if (null == driver) {
@@ -29,7 +35,7 @@ public class Utils {
                 if (osName.equals("Linux")) {
                     System.setProperty("webdriver.chrome.driver", Config.CHROME_DRIVER_PATH_UBUNTU);
                     headlessBrowser();
-                } else if (config.getInstance().getBrowser().equals("headless")) {
+                } else if (Config.getInstance().getBrowser().equals("headless")) {
                     headlessBrowser();
                 } else {
                     //System.setProperty("webdriver.chrome.driver", Context.CHROME_DRIVER_PATH);
@@ -38,7 +44,7 @@ public class Utils {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Unable to load browser: " + e.getMessage());
+            logger.info("Unable to load browser: " + e.getMessage());
         } finally {
             driver.manage().window().maximize();
             driver.switchTo().window(driver.getWindowHandle());
@@ -50,7 +56,11 @@ public class Utils {
         return driver;
     }
 
-    //After tests are done, takes screenshot if failed, closes browser and ends test.
+    /**
+     * After tests are done, takes screenshot if failed, closes browser and ends test.
+     *
+     * @param scenario library to get screenshot and reach to tags
+     */
     public static WebDriver endTest(Scenario scenario) {
         try {
             if (driver != null && scenario.isFailed()) {
@@ -59,7 +69,7 @@ public class Utils {
                 // "Try" below will save the screenshot in d drive with test method name
                 try {
                     FileUtils.copyFile(srcFile, new File(filePath + "result" + ".png"));
-                    System.out.println("*** Screenshot is in " + filePath + " ***");
+                    logger.info("*** Screenshot is in " + filePath + " ***");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -73,18 +83,28 @@ public class Utils {
                 driver = null;
             }
         } catch (Exception e) {
-            System.out.println("Methods failed: tearDownAndScreenshotOnFailure, Exception is: " + e.getMessage());
+            logger.info("Methods failed: tearDownAndScreenshotOnFailure, Exception is: " + e.getMessage());
         }
         return driver;
     }
 
+    /**
+     * Navigating to given page
+     *
+     * @param url given url to navigate
+     */
     public void navigateTo(String url) {
-        System.out.println("Opening page " + url);
+        logger.info("Opening page " + url);
         driver.get(url);
     }
 
+    /**
+     * Implicit wait when necessary
+     *
+     * @param time duration to wait implicitly
+     */
     public static void sleep(long time) {
-        System.out.println("Waiting " + time + " seconds");
+        logger.info("Waiting " + time + " seconds");
         try {
             TimeUnit.SECONDS.sleep(time);
         } catch (Exception e) {
@@ -92,30 +112,49 @@ public class Utils {
         }
     }
 
+    /**
+     * Explicit wait until the existence of the element
+     *
+     * @param driver  Webdriver parameter
+     * @param locator Parameter to reach to element
+     * @throws Exception
+     */
     public static void waitForElementExists(WebDriver driver, By locator) throws Exception {
-        System.out.println("Waiting for " + locator + " to exist in page");
+        logger.info("Waiting for " + locator + " to exist in page");
         long DEFAULT_TIMEOUT = 20000L;
         WebDriverWait wait = new WebDriverWait(driver, DEFAULT_TIMEOUT / 1000L);
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
+    /**
+     * Clicks on buttons, fields
+     *
+     * @param locator Parameter to reach to element
+     * @throws InterruptedException
+     */
     public void clickLocator(By locator) throws InterruptedException {
         boolean clicked = false;
         int attempts = 0;
         while (attempts < 10 && !clicked) {
             try {
                 new WebDriverWait(driver, 20).until(ExpectedConditions.elementToBeClickable(locator)).click();
-                System.out.println("Successfully clicked on the element using by locator: " + "<" + locator.toString() + ">");
+                logger.info("Successfully clicked on the element using by locator: " + "<" + locator.toString() + ">");
                 clicked = true;
             } catch (Exception e) {
-                System.out.println("Unable to click on element, Exception: " + e.getMessage());
+                logger.info("Unable to click on element, Exception: " + e.getMessage());
                 Assert.fail("Unable to click on element: " + "<" + locator.toString() + ">");
             }
             attempts++;
         }
     }
 
-    //Sends keys to fileds or pushes keyboard buttons
+    /**
+     * Sends keys to fileds or pushes keyboard buttons
+     *
+     * @param locator Parameter to reach to element
+     * @param text    Text to write in the field
+     * @throws Exception
+     */
     public void sendKeysToLocator(By locator, String text) throws Exception {
         long DEFAULT_TIMEOUT = 20000L;
         WebDriverWait wait = new WebDriverWait(driver, DEFAULT_TIMEOUT / 1000L);
@@ -127,42 +166,45 @@ public class Utils {
                 wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).clear();
                 wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).sendKeys(text);
             }
-            System.out.println("Successfully sent the text: " + text);
+            logger.info("Successfully sent the text: " + text);
         } catch (Exception e) {
-            System.out.println("Unable to send keys: " + text);
+            logger.info("Unable to send keys: " + text);
             Assert.fail("Unable to send keys to locator, Exception: " + e.getMessage());
         }
     }
 
-    public static By getLocator(String locatorName) throws IOException {
-        String locatorProperty = config.getInstance().getLocatorName(locatorName);
-        String locatorType = locatorProperty.split(":")[0];
-        String locatorValue = locatorProperty.split(":")[1];
-        By locator = null;
-        switch (locatorType) {
-            case "Id":
-                locator = By.id(locatorValue);
-                break;
-            case "Name":
-                locator = By.name(locatorValue);
-                break;
-            case "Xpath":
-                locator = By.xpath(locatorValue);
-                break;
-            case "Class":
-                locator = By.className(locatorValue);
-                break;
-        }
-        return locator;
-    }
-
-    // This is mainly for asserting the navigated page existence
+    /**
+     * This is mainly for asserting the existence of navigated page
+     *
+     * @param locator Parameter to reach to element
+     * @throws Exception
+     */
     public void assertIfElementExists(By locator) throws Exception {
         waitForElementExists(driver, locator);
         Assert.assertEquals(true, driver.findElement(locator).isDisplayed());
-        System.out.println("Successfully approved the element existence " + locator);
+        logger.info("Successfully approved the element existence " + locator);
     }
 
+    /**
+     * gets the number of elements existed in page depending on DOM
+     *
+     * @param locator Parameter to reach to element
+     * @return boolean depending on the element existence
+     * @throws Exception
+     */
+    public boolean getValueOfElement(By locator) throws Exception {
+        waitForElementExists(driver, locator);
+        boolean result = driver.findElements(locator).size() != 0;
+        return result;
+
+    }
+
+    /**
+     * Getting information and selecting elements in dropdowns
+     *
+     * @param locator Parameter to reach to element
+     * @param text    Text in dropdown to select
+     */
     public void handleDropDown(By locator, String text) {
         try {
             //Using JavascriptExecuter in order to make element visible
@@ -172,14 +214,16 @@ public class Utils {
             drpDown.selectByVisibleText(text);
             //Had to sleep till the dropdown is closed and click to next element
             sleep(2);
-            System.out.println("Successfully selected the " + text + " from dropdown.");
+            logger.info("Successfully selected the " + text + " from dropdown.");
         } catch (Exception e) {
-            System.out.println("Unable to select " + text);
+            logger.info("Unable to select " + text);
             Assert.fail("Unable to select value from dropdown, Exception: " + e.getMessage());
         }
     }
 
-    //Starting headless browser mainly for GitHub Actions but also applicable for local execution.
+    /**
+     * Starting headless browser mainly for GitHub Actions but also applicable for local execution.
+     */
     public void headlessBrowser() {
         ChromeOptions chOptions = new ChromeOptions();
         chOptions.addArguments("--headless");
@@ -188,16 +232,11 @@ public class Utils {
         driver = new ChromeDriver(chOptions);
     }
 
-    //Had to create this method to handle sporadic page changes.
-    public void clickIfElementExists(By locator) throws InterruptedException {
-        if (driver.findElements(locator).size() != 0) {
-            clickLocator(locator);
-            //Had to wait for the page to load appropriately
-            sleep(1);
-        }
-    }
-
-    //Created this method because sometimes it opens the wrong website. I needed to refresh when it does.
+    /**
+     * Created this method because sometimes it opens the wrong website. I needed to refresh when it does.
+     *
+     * @param locator Parameter to reach to element
+     */
     public void refreshPageIfElementExists(By locator) {
         //Waiting for 1 sec to load page appropriately
         sleep(1);
@@ -207,9 +246,21 @@ public class Utils {
                 break;
             } else {
                 driver.navigate().refresh();
-                System.out.println("refreshed page successfully");
+                logger.info("refreshed page successfully");
                 count++;
             }
+        }
+    }
+
+    /**
+     * Accepting cookies in the page
+     *
+     * @param locator Parameter to reach to element
+     * @throws InterruptedException
+     */
+    public void acceptCookies(By locator) throws Exception {
+        if (getValueOfElement(locator)) {
+            clickLocator(locator);
         }
     }
 }
