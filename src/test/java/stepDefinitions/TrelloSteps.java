@@ -3,16 +3,11 @@ package stepDefinitions;
 import cucumber.api.java.en.*;
 import pageObjects.LoginPageObject;
 
-public class AmazonSteps extends LoginPageObject {
+public class TrelloSteps extends LoginPageObject {
 
-    @Given("^I navigate to amazon login page$")
-    public void i_navigate_to_amazon_login_page() throws Throwable {
+    @Given("^I navigate to trello login page$")
+    public void i_navigate_to_trello_login_page() throws Throwable {
         navigateToLoginPage();
-    }
-
-    @Given("^I verify if navigation to username page is successful$")
-    public void i_verify_if_navigation_to_username_page_is_successful() throws Throwable {
-        verifyUserNamePage();
     }
 
     @When("^I enter username$")
@@ -42,6 +37,6 @@ public class AmazonSteps extends LoginPageObject {
 
     @Then("^I should verify successful login$")
     public void i_should_verify_successful_login() throws Throwable {
-        checkIfAmazonLoginSuccessful();
+        checkIfTrelloLoginSuccessful();
     }
 }

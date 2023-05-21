@@ -5,38 +5,21 @@ import utility.Config;
 import utility.Utils;
 
 public class LoginPageObject extends Utils {
-    private By departmentsTab = By.xpath("//*[text()='Departments']");
-    private By signInLink = By.xpath("//*[@data-nav-ref='nav_ya_signin']");
-    private By signInPage = By.name("signIn");
-    private By usernameField = By.id("ap_email");
-    private By signInContinueButton = By.xpath("//*[@type='submit']");
-    private By passwordField = By.id("ap_password");
-    private By signInButton = By.id("signInSubmit");
-    private By messageWarning = By.xpath("//*[text()='Important Message!']");
-    private By nameAppearanceOnLogin = By.xpath("//span[contains(text(),'TestUser')]");
-    private By userNamePage = By.xpath("//*[contains(text(),'E-posta adresi veya telefon numarası')]");
-    private By passwordPage = By.xpath("//label[contains(text(),'Şifre')]");
-    private By acceptCookieButton = By.id("sp-cc-accept");
+    private By signInLink = By.xpath("//*[@data-uuid='MJFtCCgVhXrVl7v9HA7EH_login']");
+    private By usernameField = By.id("user");
+    private By signInContinueButton = By.id("login");
+    private By passwordField = By.id("password");
+    private By signInButton = By.id("login-submit");
+    private By nameAppearanceOnLogin = By.xpath("//*[@data-testid='home-team-tab-name']");
 
     /**
-     * Navigation to login page of Amazon
+     * Navigation to login page of Trello
      *
      * @throws Exception
      */
     public void navigateToLoginPage() throws Exception {
-        refreshPageIfElementExists(departmentsTab);
-        acceptCookies(acceptCookieButton);
         clickLocator(signInLink);
-        assertIfElementExists(signInPage);
-    }
-
-    /**
-     * Checking if navigation to username entrance page is successful
-     *
-     * @throws Exception
-     */
-    public void verifyUserNamePage() throws Exception {
-        assertIfElementExists(userNamePage);
+        assertIfElementExists(usernameField);
     }
 
     /**
@@ -63,7 +46,7 @@ public class LoginPageObject extends Utils {
      * @throws Exception
      */
     public void verifyPasswordPage() throws Exception {
-        assertIfElementExists(passwordPage);
+        assertIfElementExists(passwordField);
     }
 
     /**
@@ -85,12 +68,11 @@ public class LoginPageObject extends Utils {
     }
 
     /**
-     * Verifies if login to Amazon page is successful
+     * Verifies if login to Trello page is successful
      *
      * @throws Exception
      */
-    public void checkIfAmazonLoginSuccessful() throws Exception {
-        refreshPageIfElementExists(messageWarning);
+    public void checkIfTrelloLoginSuccessful() throws Exception {
         assertIfElementExists(nameAppearanceOnLogin);
     }
 }

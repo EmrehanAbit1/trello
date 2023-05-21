@@ -120,7 +120,7 @@ public class Utils {
      */
     public static void waitForElementExists(WebDriver driver, By locator) throws Exception {
         logger.info("Waiting for " + locator + " to exist in page");
-        long DEFAULT_TIMEOUT = 20000L;
+        long DEFAULT_TIMEOUT = 30000L;
         WebDriverWait wait = new WebDriverWait(driver, DEFAULT_TIMEOUT / 1000L);
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
