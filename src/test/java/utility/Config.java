@@ -86,4 +86,8 @@ public class Config {
     public String commentCardJsonPath() {
         return prop.getProperty("commentCardJsonPath");
     }
+
+    public String getEncodedKey(){return prop.getProperty("encodedKey");}
+
+    public String getEncodedToken(){return prop.getProperty("encodedToken");}
 }
