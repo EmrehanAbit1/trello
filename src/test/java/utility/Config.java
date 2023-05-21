@@ -62,19 +62,28 @@ public class Config {
         return prop.getProperty("baseURI");
     }
 
-    public String getPetAdditionJsonPath() {
-        return prop.getProperty("addPetJsonPath");
-    }
-
-    public String getPetUpdateJsonPath() {
-        return prop.getProperty("updatePetJson");
-    }
-
     public String getUserName() {
         return prop.getProperty("username");
     }
 
     public String getPassword() {
         return prop.getProperty("password");
+    }
+
+
+    public String boardAddJsonPath() {
+        return prop.getProperty("addBoardJsonPath");
+    }
+
+    public String cardAddJsonPath() {
+        return prop.getProperty("addCardJsonPath");
+    }
+
+    public String cardEditJsonPath() {
+        return prop.getProperty("editCardJsonPath");
+    }
+
+    public String commentCardJsonPath() {
+        return prop.getProperty("commentCardJsonPath");
     }
 }

@@ -6,23 +6,33 @@ import cucumber.api.java.en.*;
 
 public class ApiSteps extends ResponseApi {
 
-    @Given("^I add new pet into the store with post request to url \"([^\"]*)\"$")
-    public void i_add_new_pet_into_the_store_with_post_request_to_url(String url) throws Throwable {
-        addNewPetToStore(url);
+    @Given("^I add new board with post request to url \"([^\"]*)\"$")
+    public void i_add_new_board_with_post_request_to_url(String url) throws Throwable {
+        addNewBoardToTrello(url);
     }
 
-    @Given("^I perform check if one of the type of dog is \"([^\"]*)\" with url \"([^\"]*)\"$")
-    public void i_perform_check_if_one_of_the_type_of_dog_is_with_url(String type, String url) throws Throwable {
-        checkDogType(type, url);
+    @Given("^I get the list with url \"([^\"]*)\"$")
+    public void i_get_the_list_with_url(String url) throws Throwable {
+        getListsInTheBoard(url);
     }
 
-    @When("^I update pet information with put request to url \"([^\"]*)\"$")
-    public void i_update_pet_information_with_put_request_to_url(String url) throws Throwable {
-        updatePetInformation(url);
+    @Given("^I create new cards into the created board with url \"([^\"]*)\"$")
+    public void i_create_new_cards_into_the_created_board_with_url(String url) throws Throwable {
+        addNewCardsInTheLists(url);
     }
 
-    @Then("^I delete the pet information with url \"([^\"]*)\"$")
-    public void i_delete_the_pet_information_with_url(String url) {
-        deleteCreatedPet(url);
+    @Given("^I update one of the cards with put request to url \"([^\"]*)\"$")
+    public void i_update_one_of_the_cards_with_put_request_to_url(String url) throws Throwable {
+        editCardContent(url);
+    }
+
+    @Given("^I delete one of the cards with url \"([^\"]*)\"$")
+    public void i_delete_one_of_the_cards_with_url(String url) throws Throwable {
+        deleteACard(url);
+    }
+
+    @Then("^I add comment to one of the cards with url \"([^\"]*)\"$")
+    public void i_add_comment_to_one_of_the_cards_with_url(String url) throws Throwable {
+        addCommentToACard(url);
     }
 }

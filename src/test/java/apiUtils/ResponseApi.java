@@ -6,62 +6,90 @@ import org.junit.Assert;
 import utility.Config;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResponseApi extends RequestApi {
 
-    private static int petId;
+    private static String boardId;
+    private static List<String> idLists;
+    private static final List<String> cardLists = new ArrayList<String>();
 
     /**
-     * API request to add a new pet to store.
-     *
-     * @param url api URI extension
+     * Adds new board to trello
+     * @param url
      * @throws IOException
      */
-    public void addNewPetToStore(String url) throws IOException {
-        String jsonString = stringifyPostPutResponse(url, Config.getInstance().getPetAdditionJsonPath());
-        petId = JsonPath.from(jsonString).get("id");
+    public void addNewBoardToTrello(String url) throws IOException {
+        response = apiRequestPost(url, Config.getInstance().boardAddJsonPath());
+        String jsonString = response.asString();
+        boardId = JsonPath.from(jsonString).get("id");
+        assertIfStatusCodeTrue(response.getStatusCode());
     }
 
     /**
-     * API request to assert if dog type exists
-     *
-     * @param type type of dog to search
-     * @param url  api URI extension
+     * Gets the lists in board for adding new cards to them
+     * @param url
      */
-    public void checkDogType(String type, String url) {
-        String jsonString = stringifyGetResponse(url + "/" + String.valueOf(petId));
+    public void getListsInTheBoard(String url) {
+        response = apiRequestGet(url + "/" + "" + boardId + "" + "/lists");
+        String jsonString = response.asString();
         JsonPath js = new JsonPath(jsonString);
-        List<String> tags = js.getList("tags.name");
-        for (String tag : tags) {
-            if (tag.equals(type)) {
-                System.out.println("You got it right!! Dog type is correct");
-                break;
-            } else {
-                throw new java.lang.Error("Dog type does not match with any!!");
-            }
-        }
+        idLists = js.getList("id");
+        assertIfStatusCodeTrue(response.getStatusCode());
     }
 
     /**
-     * API request to update the pet name
-     *
-     * @param url api URI extension
+     * Adds 3 new cards to lists
+     * @param url
      * @throws IOException
      */
-    public void updatePetInformation(String url) throws IOException {
-        String updatePetJsonPath = Config.getInstance().getPetUpdateJsonPath();
-        String jsonString = stringifyPostPutResponse(url, updatePetJsonPath);
-        Assert.assertTrue(JsonPath.from(jsonString).get("name").equals("lilly"));
+    public void addNewCardsInTheLists(String url) throws IOException {
+        int count = 0;
+        while (count < 3) {
+            response = apiRequestAddCardPost(url, Config.getInstance().cardAddJsonPath(), idLists.get(count));
+            String jsonString = response.asString();
+            String cards = JsonPath.from(jsonString).get("id");
+            cardLists.add(cards);
+            count++;
+        }
+        assertIfStatusCodeTrue(response.getStatusCode());
     }
 
     /**
-     * API request to delete lately created pet
-     *
-     * @param url api URI extension
+     * Updates one of the cards
+     * @param url
+     * @throws IOException
      */
-    public void deleteCreatedPet(String url) {
-        String jsonString = stringifyDeleteResponse(url + "/" + String.valueOf(petId));
-        Assert.assertTrue(JsonPath.from(jsonString).get("message").equals(String.valueOf(petId)));
+    public void editCardContent(String url) throws IOException {
+        response = apiRequestPut(url + "/" + "" + cardLists.get(0) + "", Config.getInstance().cardEditJsonPath());
+        assertIfStatusCodeTrue(response.getStatusCode());
+    }
+
+    /**
+     * Deletes one of the cards
+     * @param url
+     */
+    public void deleteACard(String url) {
+        response = apiRequestDelete(url + "/" + "" + cardLists.get(1) + "");
+        assertIfStatusCodeTrue(response.getStatusCode());
+    }
+
+    /**
+     * Adds comment to one of the cards
+     * @param url
+     * @throws IOException
+     */
+    public void addCommentToACard(String url) throws IOException {
+        response = apiRequestPost(url + "/" + "" + cardLists.get(2) + "" + "/actions/comments", Config.getInstance().commentCardJsonPath());
+        assertIfStatusCodeTrue(response.getStatusCode());
+    }
+
+    /**
+     * Checks if the response status code is successful
+     * @param statusCode
+     */
+    public void assertIfStatusCodeTrue(int statusCode) {
+        Assert.assertEquals(200, statusCode);
     }
 }

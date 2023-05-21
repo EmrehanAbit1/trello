@@ -2,33 +2,15 @@ package apiUtils;
 
 import static io.restassured.RestAssured.*;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class RequestApi {
 
     protected Response response;
-
-    /**
-     * Parameters for token
-     *
-     * @param objects list of obects
-     * @param values  list of object values
-     * @return
-     */
-    public static JSONObject requestParams(List<String> objects, List<String> values) {
-        JSONObject reqParams = new JSONObject();
-        for (int i = 0; i < objects.size(); i++) {
-            reqParams.put(objects.get(i), values.get(i));
-        }
-        return reqParams;
-    }
 
     /**
      * Execute GET Request
@@ -38,6 +20,8 @@ public class RequestApi {
      */
     public Response apiRequestGet(String url) {
         Response response = given()
+                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
+                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
                 .get(url)
                 .then()
                 .extract()
@@ -47,16 +31,18 @@ public class RequestApi {
     }
 
     /**
-     * Execute POST Request
+     * Execute POST Request to add board
      *
      * @param url  Request URI extension
      * @param path Path to json body file
-     * @return
+     * @return response
      * @throws IOException
      */
     public Response apiRequestPost(String url, String path) throws IOException {
         Response response = given()
                 .header("Content-type", "application/json")
+                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
+                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
                 .and()
                 .body(generateStringFromJsonFile(path))
                 .when()
@@ -68,21 +54,21 @@ public class RequestApi {
     }
 
     /**
-     * Execute POST Request for token authentication
+     * Execute POST Request to add board
      *
-     * @param url     Request URI extension
-     * @param token   token value
-     * @param objects
-     * @param values
-     * @return
+     * @param url  Request URI extension
+     * @param path Path to json body file
+     * @return response
+     * @throws IOException
      */
-    public Response apiRequestPostWithToken(String url, String token, List<String> objects, List<String> values) {
-        JSONObject requestParam = requestParams(objects, values);
-        Response response = RestAssured.given()
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer" + token)
+    public Response apiRequestAddCardPost(String url, String path, String idList) throws IOException {
+        Response response = given()
+                .header("Content-type", "application/json")
+                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
+                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
+                .queryParam("idList", idList)
                 .and()
-                .body(requestParam.toJSONString())
+                .body(generateStringFromJsonFile(path))
                 .when()
                 .post(url)
                 .then()
@@ -102,6 +88,8 @@ public class RequestApi {
     public Response apiRequestPut(String url, String path) throws IOException {
         Response response = given()
                 .header("Content-type", "application/json")
+                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
+                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
                 .and()
                 .body(generateStringFromJsonFile(path))
                 .when()
@@ -120,6 +108,8 @@ public class RequestApi {
      */
     public Response apiRequestDelete(String url) {
         Response response = given()
+                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
+                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
                 .delete(url)
                 .then()
                 .extract()
@@ -137,47 +127,5 @@ public class RequestApi {
      */
     public String generateStringFromJsonFile(String path) throws IOException {
         return new String(Files.readAllBytes(Paths.get(path)));
-    }
-
-    /**
-     * Executing POST or PUT Request and stringifying it. Done for reusability and code duplication purposes
-     *
-     * @param url      Request URI extension
-     * @param filePath Path to json body file
-     * @return
-     * @throws IOException
-     */
-    public String stringifyPostPutResponse(String url, String filePath) throws IOException {
-        if (filePath.contains("Post")) {
-            response = apiRequestPost(url, filePath);
-        } else if (filePath.contains("Put")) {
-            response = apiRequestPut(url, filePath);
-        }
-        String jsonString = response.asString();
-        return jsonString;
-    }
-
-    /**
-     * Executing GET Request and stringifying it. Done for reusability and code duplication purposes
-     *
-     * @param url Request URI extension
-     * @return
-     */
-    protected String stringifyGetResponse(String url) {
-        response = apiRequestGet(url);
-        String jsonString = response.asString();
-        return jsonString;
-    }
-
-    /**
-     * Executing DELETE Request and stringifying it. Done for reusability and code duplication purposes
-     *
-     * @param url Request URI extension
-     * @return
-     */
-    protected String stringifyDeleteResponse(String url) {
-        response = apiRequestDelete(url);
-        String jsonString = response.asString();
-        return jsonString;
     }
 }
