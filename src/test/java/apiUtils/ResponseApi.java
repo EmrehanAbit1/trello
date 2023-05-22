@@ -89,7 +89,7 @@ public class ResponseApi extends RequestApi {
      * @throws IOException
      */
     public void addCommentToACard(String url) throws IOException {
-        response = apiRequestPost(url + "/" + "" + cardLists.get(2) + "" + "/actions/comments", Config.getInstance().commentCardJsonPath(), encodedKey, encodedToken);
+        response = apiRequestPost(url + "/" + "" + cardLists.get(0) + "" + "/actions/comments", Config.getInstance().commentCardJsonPath(), encodedKey, encodedToken);
         assertIfStatusCodeTrue(response.getStatusCode());
     }
 

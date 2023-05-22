@@ -120,9 +120,9 @@ public class Utils {
      */
     public static void waitForElementExists(WebDriver driver, By locator) throws Exception {
         logger.info("Waiting for " + locator + " to exist in page");
-        long DEFAULT_TIMEOUT = 30000L;
+        long DEFAULT_TIMEOUT = 50000L;
         WebDriverWait wait = new WebDriverWait(driver, DEFAULT_TIMEOUT / 1000L);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
     /**
@@ -199,25 +199,38 @@ public class Utils {
     }
 
     /**
-     * Getting information and selecting elements in dropdowns
+     * get the number of elements exist in the page
      *
-     * @param locator Parameter to reach to element
-     * @param text    Text in dropdown to select
+     * @param locator
+     * @return
+     * @throws Exception
      */
-    public void handleDropDown(By locator, String text) {
-        try {
-            //Using JavascriptExecuter in order to make element visible
-            JavascriptExecutor j = (JavascriptExecutor) driver;
-            j.executeScript("document.getElementById('address-ui-widgets-countryCode-dropdown-nativeId').style.display='block';");
-            Select drpDown = new Select(driver.findElement(locator));
-            drpDown.selectByVisibleText(text);
-            //Had to sleep till the dropdown is closed and click to next element
-            sleep(2);
-            logger.info("Successfully selected the " + text + " from dropdown.");
-        } catch (Exception e) {
-            logger.info("Unable to select " + text);
-            Assert.fail("Unable to select value from dropdown, Exception: " + e.getMessage());
-        }
+    public static int getNumberOfElements(By locator) throws Exception {
+        waitForElementExists(driver, locator);
+        int elements = driver.findElements(locator).size();
+        return elements;
+    }
+
+    /**
+     * sends keys if there are multiple elements
+     *
+     * @param locator
+     * @param num
+     * @param text
+     * @throws Exception
+     */
+    public void sendKeyToOneOfTheElements(By locator, int num, String text) throws Exception {
+        driver.findElements(locator).get(num).sendKeys(text);
+    }
+
+    /**
+     * selects items from lists
+     *
+     * @param locator
+     * @param text
+     */
+    public void selectListItem(By locator, String text) {
+        new Select(driver.findElement(locator)).selectByVisibleText(text);
     }
 
     /**
@@ -229,37 +242,5 @@ public class Utils {
         chOptions.addArguments("no-sandbox");
         chOptions.addArguments("ignore-certificate-errors");
         driver = new ChromeDriver(chOptions);
-    }
-
-    /**
-     * Created this method because sometimes it opens the wrong website. I needed to refresh when it does.
-     *
-     * @param locator Parameter to reach to element
-     */
-    public void refreshPageIfElementExists(By locator) {
-        //Waiting for 1 sec to load page appropriately
-        sleep(1);
-        int count = 0;
-        while (count < 20) {
-            if (driver.findElements(locator).size() == 0) {
-                break;
-            } else {
-                driver.navigate().refresh();
-                logger.info("refreshed page successfully");
-                count++;
-            }
-        }
-    }
-
-    /**
-     * Accepting cookies in the page
-     *
-     * @param locator Parameter to reach to element
-     * @throws InterruptedException
-     */
-    public void acceptCookies(By locator) throws Exception {
-        if (getValueOfElement(locator)) {
-            clickLocator(locator);
-        }
     }
 }

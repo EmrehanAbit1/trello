@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.*;
 
 import io.restassured.response.Response;
 import org.apache.commons.codec.binary.Base64;
+import utility.Config;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +13,8 @@ import java.nio.file.Paths;
 public class RequestApi {
 
     protected Response response;
+    protected String APIToken = decodeBase64(Config.getInstance().getEncodedToken());
+    protected String APIKey = decodeBase64(Config.getInstance().getEncodedKey());
 
     /**
      * Execute GET Request
@@ -21,8 +24,8 @@ public class RequestApi {
      */
     public Response apiRequestGet(String url, String key, String token) {
         Response response = given()
-                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
-                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
+                .queryParam("key", APIKey)
+                .queryParam("token", APIToken)
                 .get(url)
                 .then()
                 .extract()
@@ -42,8 +45,8 @@ public class RequestApi {
     public Response apiRequestPost(String url, String path, String key, String token) throws IOException {
         Response response = given()
                 .header("Content-type", "application/json")
-                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
-                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
+                .queryParam("key", APIKey)
+                .queryParam("token", APIToken)
                 .and()
                 .body(generateStringFromJsonFile(path))
                 .when()
@@ -65,8 +68,8 @@ public class RequestApi {
     public Response apiRequestAddCardPost(String url, String path, String idList, String key, String token) throws IOException {
         Response response = given()
                 .header("Content-type", "application/json")
-                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
-                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
+                .queryParam("key", APIKey)
+                .queryParam("token", APIToken)
                 .queryParam("idList", idList)
                 .and()
                 .body(generateStringFromJsonFile(path))
@@ -89,8 +92,8 @@ public class RequestApi {
     public Response apiRequestPut(String url, String path, String key, String token) throws IOException {
         Response response = given()
                 .header("Content-type", "application/json")
-                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
-                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
+                .queryParam("key", APIKey)
+                .queryParam("token", APIToken)
                 .and()
                 .body(generateStringFromJsonFile(path))
                 .when()
@@ -109,8 +112,8 @@ public class RequestApi {
      */
     public Response apiRequestDelete(String url, String key, String token) {
         Response response = given()
-                .queryParam("key", "c05353391dcb70baa6f77a88f511bb10")
-                .queryParam("token", "ATTA75051ee100a1033ed139af0edda2ca4c01962ce1687291051d720a486a568c820B705D5E")
+                .queryParam("key", APIKey)
+                .queryParam("token", APIToken)
                 .delete(url)
                 .then()
                 .extract()
@@ -131,13 +134,12 @@ public class RequestApi {
     }
 
     /**
-     * Decodes key and token for security
+     * Decodes key and token for security reasons
+     *
      * @param decoder
      * @return
      */
-    public static String decodeBase64(String decoder){
-        String gf = "YzA1MzUzMzkxZGNiNzBiYWE2Zjc3YTg4ZjUxMWJiMTA=";
-        String str = "QVRUQTc1MDUxZWUxMDBhMTAzM2VkMTM5YWYwZWRkYTJjYTRjMDE5NjJjZTE2ODcyOTEwNTFkNzIwYTQ4NmE1NjhjODIwQjcwNUQ1RQ==";
+    public static String decodeBase64(String decoder) {
         byte[] bytes = Base64.decodeBase64(decoder.getBytes());
         return new String(bytes);
     }

@@ -3,7 +3,7 @@ package stepDefinitions;
 import cucumber.api.java.en.*;
 import pageObjects.LoginPageObject;
 
-public class TrelloSteps extends LoginPageObject {
+public class LoginSteps extends LoginPageObject {
 
     @Given("^I navigate to trello login page$")
     public void i_navigate_to_trello_login_page() throws Throwable {

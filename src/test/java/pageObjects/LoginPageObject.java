@@ -5,12 +5,13 @@ import utility.Config;
 import utility.Utils;
 
 public class LoginPageObject extends Utils {
+
     private By signInLink = By.xpath("//*[@data-uuid='MJFtCCgVhXrVl7v9HA7EH_login']");
     private By usernameField = By.id("user");
     private By signInContinueButton = By.id("login");
     private By passwordField = By.id("password");
     private By signInButton = By.id("login-submit");
-    private By nameAppearanceOnLogin = By.xpath("//*[@data-testid='home-team-tab-name']");
+    private By nameAppearanceOnLogin = By.xpath("//*[text()='Test Trello Board']");
 
     /**
      * Navigation to login page of Trello
@@ -75,4 +76,5 @@ public class LoginPageObject extends Utils {
     public void checkIfTrelloLoginSuccessful() throws Exception {
         assertIfElementExists(nameAppearanceOnLogin);
     }
+
 }

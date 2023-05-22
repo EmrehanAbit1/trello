@@ -20,6 +20,9 @@ Feature: End to end test for Trello API
     And I enter password
     And I click on login button
     Then I should verify successful login
-
-  @webTest
-  Scenario: Proceed to check if the api requests worked successfully
+    When I navigate to Test Trello Board
+    And I verify if navigation to board is successful
+    And I verify that there are 2 cards on the board
+    And I verify that there is a card with a comment
+    And I add a new comment to that card
+    Then I set the card as DONE
